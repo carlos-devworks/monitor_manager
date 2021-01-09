@@ -6,7 +6,7 @@ A Python module that retrieves and changes the brightness of your monitor. Suppo
 * Open a terminal and run `pip3 install monitor_manager`
 
 #### Github:
-* Clone/download the repository by running `git clone https://github.com/carlos.devworks/monitor_manager`
+* Clone/download the repository by running `git clone https://github.com/carlos-devworks/monitor_manager`
 * Enter the folder it was cloned into with `cd monitor_manager`
 * Install using `pip3 install .`
 
@@ -42,10 +42,10 @@ python -m screen_brightness_control -g
 python -m screen_brightness_control -s 50
 ```
 
-### ScreenBrightnessError(`Exception`) 
+### ScreenBrightnessError(`Exception`)
 A generic error class designed to make catching errors under one umbrella easy. Raised when the brightness cannot be set/retrieved.
 
-**Usage:**  
+**Usage:**
 ```python
 import screen_brightness_control as sbc
 
@@ -56,8 +56,8 @@ except sbc.ScreenBrightnessError as error:
 ```
 
 ### get_brightness(`verbose_error=False, **kwargs`)
-**Summary:**  
-Returns the current screen brightness as a percentage by default. It may return a list of values if you have multiple, brightness adjustable monitors.  
+**Summary:**
+Returns the current screen brightness as a percentage by default. It may return a list of values if you have multiple, brightness adjustable monitors.
 Raises `ScreenBrightnessError` upon failure
 
 **Arguments:**
@@ -65,7 +65,7 @@ Raises `ScreenBrightnessError` upon failure
 * `verbose_error` - a boolean value to control how much detail any error messages should contain
 * `kwargs` - passed to the OS relevant brightness method
 
-**Usage:**  
+**Usage:**
 ```python
 import screen_brightness_control as sbc
 
@@ -75,10 +75,10 @@ all_screens_brightness = sbc.get_brightness()
 primary_display_brightness = sbc.get_brightness(display=0)
 #get the brightness of the secondary display (if connected)
 secondary_display_brightness = sbc.get_brightness(display=1)
-```  
+```
 
 ### set_brightness(`value, force=False, verbose_error=False, **kwargs`)
-**Summary:**  
+**Summary:**
 Sets the brightness to `value`. If `value` is a string and contains "+" or "-" then that value is added to/subtracted from the current brightness.
 Raises `ScreenBrightnessError` upon failure
 
@@ -89,7 +89,7 @@ Raises `ScreenBrightnessError` upon failure
 * `verbose_error` - a boolean value to control how much detail any error messages should contain
 * `kwargs` - passed to the OS relevant brightness method
 
-**Usage:**  
+**Usage:**
 ```python
 import screen_brightness_control as sbc
 
@@ -107,10 +107,10 @@ sbc.set_brightness('-30')
 
 #set the brightness of display 0 to 50%
 sbc.set_brightness(50, display=0)
-```  
+```
 
 ### fade_brightness(`finish, start=None, interval=0.01, increment=1, blocking=True, **kwargs`)
-**Summary:**  
+**Summary:**
 Fades the brightness from `start` to `finish` in steps of `increment`, pausing for `interval` seconds between each step.
 If it runs in the main thread it will return the final brightness upon success, `ScreenBrightnessError` upon failure. Otherwise it returns the list of thread objects that the process is running in
 
@@ -123,7 +123,7 @@ If it runs in the main thread it will return the final brightness upon success, 
 * `blocking` - If set to `False` it fades the brightness in a new thread
 * `kwargs` - passed to `set_brightness`
 
-**Usage:**  
+**Usage:**
 ```python
 import screen_brightness_control as sbc
 
@@ -148,33 +148,33 @@ This software is licensed under the [MIT license](https://mit-license.org/)
 
 # FAQ
 ### Why do I always get `ScreenBrightnessError` on Linux?
-**Why this happens:**  
+**Why this happens:**
 The way brightness is adjusted on Linux is the program tries to run shell commands to adjust the brightness.
 The programs it attempts to call are "xrandr", "ddcutil" and "xbacklight".
 If none of these programs can be called a `ScreenBrightnessError` is raised
 
-**How to fix it:**  
+**How to fix it:**
 Install `xrandr`, `ddcutil`, or `xbacklight` using your system package manager.
 
 ### I call `set_brightness()` and nothing happens on Linux
-**Why this happens:**  
+**Why this happens:**
 If you installed xrandr or xbacklight, it only supports graphics drivers that support RandR.
 If you installed ddcutil, this requires root access to run for every query.
 
-**How to fix it:**   
-If you installed `xrandr` or `xbacklight`: make sure your graphics drivers support RandR.  
-If you installed `ddcutil`: make sure to run the script with root permissions.  
+**How to fix it:**
+If you installed `xrandr` or `xbacklight`: make sure your graphics drivers support RandR.
+If you installed `ddcutil`: make sure to run the script with root permissions.
 
 ### Using the `display` kwarg does nothing/creates exceptions on Linux
-**Why this happens:**  
+**Why this happens:**
 The `display` kwarg is only supported by the `Light`, `XRandr` and `DDCUtil` classes, not by `XBacklight`. So if you only have `xbacklight` installed on your system this kwarg will not work
 
-**How to fix it:**  
+**How to fix it:**
 Install `xrandr` or `ddcutil` or `light` using your system package manager. See the installation section at the top of this document for instructions on how to do so.
 
 
 ### The model of my monitor/display is not what the program says it is (Windows)
-**Why this happens:**  
+**Why this happens:**
 If your display is a laptop screen and can be adjusted via a Windows brightness slider then there is no easy way to get the monitor model that I am aware of.
 If your display is a desktop monitor with a Virtual Control Panel (VCP) then there is a way to get the actual model, but the function call takes
 anywhere between 1 and 2 seconds to run, which is why it doesn't automatically.
@@ -189,13 +189,13 @@ print(monitor.model_name)
 ```
 
 ### The serial number of my monitor/display is not what the program says it is (Windows)
-**Why this happens:**  
+**Why this happens:**
 I do not know how to get a monitor's serial number using VCP and WMI.
 The "serial" reported by this library is a unique identifier that Windows gives each display that I could reliably extract using both VCP and WMI. I decided that, for what I needed it for, it was good enough.
 
 ### When I call `get_brightness()` the returned value isn't what I set it to (Windows)
 Not all monitors can set the brightness for every value between 0 and 100. Most of them have a number of 'levels' that they can set them to.
-You can likely see this if you open your display settings and very slowly move the brightness slider.  
+You can likely see this if you open your display settings and very slowly move the brightness slider.
 You can find out your brightness 'levels' by running the following python code:
 ```python
 import wmi
