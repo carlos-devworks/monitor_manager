@@ -1,9 +1,9 @@
 from setuptools import setup
 
 setup(name='monitor_manager',
-    url='https://github.com/carlos.devworks/monitor_manager',
+    url='https://github.com/carlos-devworks/monitor_manager',
     project_urls={
-        'Documentation': 'https://carlos.devworks.github.io/monitor_manager',
+        'Documentation': 'https://carlos-devworks.github.io/monitor_manager',
     },
     license='MIT',
     author='carlos.devworks',
