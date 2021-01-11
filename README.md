@@ -22,8 +22,8 @@ If you are using a desktop computer with proper monitors, install `ddcutil`. If 
 You can call this module from your command line or use it as a python library.
 
 ```
-python -m screen_brightness_control --help
-> usage: screen_brightness_control [-h] [-d DISPLAY] [-s SET] [-g] [-f FADE] [-v]
+python -m monitor_manager --help
+> usage: monitor_manager [-h] [-d DISPLAY] [-s SET] [-g] [-f FADE] [-v]
 >
 > optional arguments:
 >   -h, --help            show this help message and exit
@@ -37,9 +37,9 @@ python -m screen_brightness_control --help
 >   -l, --list            list all monitors
 >   -v, --verbose         any error messages will be more detailed
 >   -V, --version         print the current version
-python -m screen_brightness_control -g
+python -m monitor_manager -g
 > 100
-python -m screen_brightness_control -s 50
+python -m monitor_manager -s 50
 ```
 
 ### ScreenBrightnessError(`Exception`)
@@ -47,7 +47,7 @@ A generic error class designed to make catching errors under one umbrella easy. 
 
 **Usage:**
 ```python
-import screen_brightness_control as sbc
+import monitor_manager as sbc
 
 try:
     sbc.set_brightness(50)
@@ -67,7 +67,7 @@ Raises `ScreenBrightnessError` upon failure
 
 **Usage:**
 ```python
-import screen_brightness_control as sbc
+import monitor_manager as sbc
 
 #get the current screen brightness (for all detected displays)
 all_screens_brightness = sbc.get_brightness()
@@ -91,7 +91,7 @@ Raises `ScreenBrightnessError` upon failure
 
 **Usage:**
 ```python
-import screen_brightness_control as sbc
+import monitor_manager as sbc
 
 #set brightness to 50%
 sbc.set_brightness(50)
@@ -125,7 +125,7 @@ If it runs in the main thread it will return the final brightness upon success, 
 
 **Usage:**
 ```python
-import screen_brightness_control as sbc
+import monitor_manager as sbc
 
 #fade brightness from the current brightness to 50%
 sbc.fade_brightness(50)
@@ -145,64 +145,4 @@ sbc.fade_brightness(100, blocking=False)
 
 ## License
 This software is licensed under the [MIT license](https://mit-license.org/)
-
-# FAQ
-### Why do I always get `ScreenBrightnessError` on Linux?
-**Why this happens:**
-The way brightness is adjusted on Linux is the program tries to run shell commands to adjust the brightness.
-The programs it attempts to call are "xrandr", "ddcutil" and "xbacklight".
-If none of these programs can be called a `ScreenBrightnessError` is raised
-
-**How to fix it:**
-Install `xrandr`, `ddcutil`, or `xbacklight` using your system package manager.
-
-### I call `set_brightness()` and nothing happens on Linux
-**Why this happens:**
-If you installed xrandr or xbacklight, it only supports graphics drivers that support RandR.
-If you installed ddcutil, this requires root access to run for every query.
-
-**How to fix it:**
-If you installed `xrandr` or `xbacklight`: make sure your graphics drivers support RandR.
-If you installed `ddcutil`: make sure to run the script with root permissions.
-
-### Using the `display` kwarg does nothing/creates exceptions on Linux
-**Why this happens:**
-The `display` kwarg is only supported by the `Light`, `XRandr` and `DDCUtil` classes, not by `XBacklight`. So if you only have `xbacklight` installed on your system this kwarg will not work
-
-**How to fix it:**
-Install `xrandr` or `ddcutil` or `light` using your system package manager. See the installation section at the top of this document for instructions on how to do so.
-
-
-### The model of my monitor/display is not what the program says it is (Windows)
-**Why this happens:**
-If your display is a laptop screen and can be adjusted via a Windows brightness slider then there is no easy way to get the monitor model that I am aware of.
-If your display is a desktop monitor with a Virtual Control Panel (VCP) then there is a way to get the actual model, but the function call takes
-anywhere between 1 and 2 seconds to run, which is why it doesn't automatically.
-To get the actual model number use this:
-```python
-import screen_brightness_control as sbc
-sbc.list_monitors()
-> ['BenQ BNQ78A7', 'Dell DEL405E']
-monitor = sbc.windows.Monitor('BenQ BNQ78A7') # swap this argument for the preferred monitor name
-print(monitor.model_name)
-> 'GL2450HM'
-```
-
-### The serial number of my monitor/display is not what the program says it is (Windows)
-**Why this happens:**
-I do not know how to get a monitor's serial number using VCP and WMI.
-The "serial" reported by this library is a unique identifier that Windows gives each display that I could reliably extract using both VCP and WMI. I decided that, for what I needed it for, it was good enough.
-
-### When I call `get_brightness()` the returned value isn't what I set it to (Windows)
-Not all monitors can set the brightness for every value between 0 and 100. Most of them have a number of 'levels' that they can set them to.
-You can likely see this if you open your display settings and very slowly move the brightness slider.
-You can find out your brightness 'levels' by running the following python code:
-```python
-import wmi
-monitor = wmi.WMI(namespace='wmi').MonitorBrightness[0]
-#the number of levels the monitor can be set to
-print(monitor.Levels)
-#the actual brightness values your monitor can be set to
-print(monitor.Level)
-```
 
